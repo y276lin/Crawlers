@@ -95,7 +95,7 @@ class MtimesMovieContentSpider(Spider):
   def parse_movie_others(self, response):
     item = response.meta['item_l4']
     item['movie_language'] = response.xpath(
-      u'//div[@class="db_movieother_2"]//strong[contains(text(),"对白语言")]/../p/a/text()').extract()
+      u'//div[@class="db_movieother_2"]//strong[contains(text(),"Subs")]/../p/a/text()').extract()
     movieid = filter(str.isdigit, response.request.url)
     t = self.time_generator()
     url_score = 'http://service.library.mtime.com/Movie.api?Ajax_CallBack=true&Ajax_CallBackType=Mtime.Library.Services&Ajax_CallBackMethod=GetMovieOverviewRating&Ajax_CrossDomain=1&Ajax_RequestUrl=http%3A%2F%2Fmovie.mtime.com%2F' + movieid + '%2F&t=' + t + '&Ajax_CallBackArgument0=' + movieid
