@@ -29,7 +29,6 @@ class MtimesMovieContentSpider(Spider):
     for url in url_dict:
       item = VCMtimesMovieItem()
       item['movie_url'] = url['movie_url']
-      # print "正在爬取第"+url['movie_pgno']+"页的"+url['movie_url']
       yield Request(url['movie_url'], headers=self.headers, meta={'item_l1':item}, callback=self.parse_movie_mainpagecontent, priority=0)
 
   def __init__(self):
@@ -41,7 +40,7 @@ class MtimesMovieContentSpider(Spider):
     item['movie_name'] = response.xpath(
       '//div[@class="db_head"]/div[1]/h1/text()').extract()
     item['director'] = response.xpath(
-      u'//dl[@class="info_l"]//strong[contains(text(),"导演")]/../a/text()').extract()
+      u'//dl[@class="info_l"]//strong[contains(text(),"director")]/../a/text()').extract()
     item['movie_ontime'] = response.xpath(
       '//div[@class="otherbox __r_c_"]/a[@property="v:initialReleaseDate"]/text()').extract()
     item['movie_duration'] = response.xpath(
@@ -49,10 +48,10 @@ class MtimesMovieContentSpider(Spider):
     item['movie_style'] = response.xpath(
       '//div[@class="otherbox __r_c_"]/a[@property="v:genre"]/text()').extract()
     item['movie_region'] = response.xpath(
-      u'//dl[@class="info_l"]//strong[contains(text(),"国家地区")]/../a/text()').extract()
-    item['movie_type'] = list(["电影"])
+      u'//dl[@class="info_l"]//strong[contains(text(),"Country&Region")]/../a/text()').extract()
+    item['movie_type'] = list(["Movies"])
     item['movie_alias'] = response.xpath(
-      u'//dl[@class="info_l"]//strong[contains(text(),"更多片名")]/../span/text()').extract()
+      u'//dl[@class="info_l"]//strong[contains(text(),"more")]/../span/text()').extract()
     yield Request(response.request.url + 'fullcredits.html', headers=self.headers,
                   meta={'item_l2': item, 'dont_redirect': True,
                         'handle_httpstatus_list': [302]}, callback=self.parse_movie_actors, priority=1)
@@ -79,13 +78,13 @@ class MtimesMovieContentSpider(Spider):
     try:
       item = response.meta['item_l3']
       item['movie_award_num'] = response.xpath(
-        u'//div[@id="awardInfo_data"]//h3[text()=" 获奖："]/strong[1]/text()').extract()
+        u'//div[@id="awardInfo_data"]//h3[text()=" Award："]/strong[1]/text()').extract()
       item['movie_subaward_nominate'] = response.xpath(
-        u'//div[@id="awardInfo_data"]//dt[text()="获奖"]/../dd/span/text()').extract()
+        u'//div[@id="awardInfo_data"]//dt[text()="Award"]/../dd/span/text()').extract()
       item['movie_award'] = response.xpath(
-        u'//div[@id="awardInfo_data"]//dt[text()="获奖"]/../preceding-sibling::*[1]/b/text()').extract()
+        u'//div[@id="awardInfo_data"]//dt[text()="Award"]/../preceding-sibling::*[1]/b/text()').extract()
       item['movie_awardyear'] = response.xpath(
-        u'//div[@id="awardInfo_data"]//dt[text()="获奖"]/../preceding-sibling::*[1]/span/a/text()').extract()
+        u'//div[@id="awardInfo_data"]//dt[text()="Award"]/../preceding-sibling::*[1]/span/a/text()').extract()
     except Exception:
       pass
     finally:
